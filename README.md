@@ -1,5 +1,6 @@
-#forked from https://github.com/simpajj/video-comparison-tool
-#reference:
+# forked from https://github.com/simpajj/video-comparison-tool
+
+# reference:
 https://www.w3schools.com/howto/howto_js_image_comparison.asp
 https://starcraft.com/zh-cn/
 
