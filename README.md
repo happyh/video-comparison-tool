@@ -3,7 +3,7 @@
 # reference:
 * https://www.w3schools.com/howto/howto_js_image_comparison.asp
 * https://starcraft.com/zh-cn/
-
+* https://github.com/jotform/before-after.js.git
 
 # Side-by-side video comparison tool
 
