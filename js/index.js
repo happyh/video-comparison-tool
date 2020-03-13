@@ -44,7 +44,7 @@ rightVideo.onended = function () {
 }
 
 window.onkeyup = function (keyEvent) {
-    if (keyEvent.key === "i" || 聽keyEvent.key === "I") {
+    if (keyEvent.key === "i" || keyEvent.key === "I") {
         leftVideoOverlay.hidden ? leftVideoOverlay.hidden = false : leftVideoOverlay.hidden = true;
         rightVideoOverlay.hidden ? rightVideoOverlay.hidden = false : rightVideoOverlay.hidden = true;
     }
