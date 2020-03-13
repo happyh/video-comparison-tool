@@ -73,6 +73,67 @@ function getNewPosition(video, nrOfFrames) {
     return (getCurrentFrame(video) + nrOfFrames) / FRAME_RATE; //+ 0.00001
 }
 
+function showCompare(img) {
+    var slider, img, clicked = 0,
+        w, h;
+    /* Get the width and height of the img element */
+    w = img.offsetWidth;
+    h = img.offsetHeight;
+    /* Create slider: */
+    slider = document.createElement("DIV");
+    slider.setAttribute("class", "comp-slider2");
+    /* Insert slider */
+    img.parentElement.insertBefore(slider, img);
+    /* Position the slider in the middle: */
+    slider.style.top = (h / 2) - (slider.offsetHeight / 2) + "px";
+    slider.style.left = (w / 2) - (slider.offsetWidth / 2) + "px";
+    /* Execute a function when the mouse button is pressed: */
+    slider.addEventListener("mousedown", slideReady);
+    /* And another function when the mouse button is released: */
+    window.addEventListener("mouseup", slideFinish);
+    /* Or touched (for touch screens: */
+    slider.addEventListener("touchstart", slideReady);
+    /* And released (for touch screens: */
+    window.addEventListener("touchstop", slideFinish);
+    slide(50)
+
+    function slideReady(e) {
+        /* Prevent any other actions that may occur when moving over the image: */
+        e.preventDefault();
+        /* The slider is now clicked and ready to move: */
+        clicked = 1;
+        slider.className = slider.className + ' draggable';
+        /* Execute a function when the slider is moved: */
+        window.addEventListener("mousemove", slideMove);
+        window.addEventListener("touchmove", slideMove);
+    }
+
+    function slideFinish() {
+        /* The slider is no longer clicked: */
+        clicked = 0;
+        slider.className = slider.className.replace(' draggable', '');
+    }
+
+    function slideMove(e) {
+        /* If the slider is no longer clicked, exit this function: */
+        if (clicked == 0) return false;
+        var rect = videoContainer.getBoundingClientRect(),
+            position = ((e.pageX - rect.left) / videoContainer.offsetWidth) * 100;
+        /* Execute a function that will resize the overlay image according to the cursor: */
+        slide(position);
+    }
+
+    function slide(position) {
+        if (position <= 100 && position >= 0) {
+            videoClipper.style.width = position + "%";
+            clippedVideo.style.width = ((100 / position) * 100) + "%";
+            clippedVideo.style.zIndex = 3;
+            /* Position the slider: */
+            slider.style.left = position + "%";
+        }
+    }
+}
+
 function syncVideoStart() {
     var mediaLoaded = [];
     var videos = Array.from(videoContainer.getElementsByTagName("video"));
@@ -87,68 +148,7 @@ function syncVideoStart() {
         }
     });
 
-    compareImages(rightVideo);
-
-    function compareImages(img) {
-        var slider, img, clicked = 0,
-            w, h;
-        /* Get the width and height of the img element */
-        w = img.offsetWidth;
-        h = img.offsetHeight;
-        /* Create slider: */
-        slider = document.createElement("DIV");
-        slider.setAttribute("class", "comp-slider2");
-        /* Insert slider */
-        img.parentElement.insertBefore(slider, img);
-        /* Position the slider in the middle: */
-        slider.style.top = (h / 2) - (slider.offsetHeight / 2) + "px";
-        slider.style.left = (w / 2) - (slider.offsetWidth / 2) + "px";
-        /* Execute a function when the mouse button is pressed: */
-        slider.addEventListener("mousedown", slideReady);
-        /* And another function when the mouse button is released: */
-        window.addEventListener("mouseup", slideFinish);
-        /* Or touched (for touch screens: */
-        slider.addEventListener("touchstart", slideReady);
-        /* And released (for touch screens: */
-        window.addEventListener("touchstop", slideFinish);
-        slide(50)
-
-        function slideReady(e) {
-            /* Prevent any other actions that may occur when moving over the image: */
-            e.preventDefault();
-            /* The slider is now clicked and ready to move: */
-            clicked = 1;
-            slider.className = slider.className + ' draggable';
-            /* Execute a function when the slider is moved: */
-            window.addEventListener("mousemove", slideMove);
-            window.addEventListener("touchmove", slideMove);
-        }
-
-        function slideFinish() {
-            /* The slider is no longer clicked: */
-            clicked = 0;
-            slider.className = slider.className.replace(' draggable', '');
-        }
-
-        function slideMove(e) {
-            /* If the slider is no longer clicked, exit this function: */
-            if (clicked == 0) return false;
-            var rect = videoContainer.getBoundingClientRect(),
-                position = ((e.pageX - rect.left) / videoContainer.offsetWidth) * 100;
-            /* Execute a function that will resize the overlay image according to the cursor: */
-            slide(position);
-        }
-
-        function slide(position) {
-            if (position <= 100 && position >= 0) {
-                videoClipper.style.width = position + "%";
-                clippedVideo.style.width = ((100 / position) * 100) + "%";
-                clippedVideo.style.zIndex = 3;
-                /* Position the slider: */
-                slider.style.left = videoClipper.offsetWidth - (slider.offsetWidth / 2) + "px";
-            }
-        }
-    }
+    showCompare(rightVideo);
 }
 
 // see: http://www.inconduit.com/smpte/
@@ -208,6 +208,8 @@ syncVideoStart();
 $(document).ready(function () {
     $('#video-compare-container').each(function () {
         var cur = $(this);
+        $("<span class=\"comp-slider2\"></span>").insertAfter(cur.find('#video-clipper')[0])
+
         // Adjust the slider
         var width = cur.width() + 'px';
         cur.find('#video-clipper video').css('width', width);
@@ -226,16 +228,6 @@ $(document).ready(function () {
                 }
             }
         });
-    });
-});
-
-// Update sliders on resize. 
-// Because we all do this: i.imgur.com/YkbaV.gif
-$(window).resize(function () {
-    $('#video-compare-container').each(function () {
-        var cur = $(this);
-        var width = cur.width() + 'px';
-        cur.find('#video-clipper video').css('width', width);
     });
 });
 
@@ -272,8 +264,7 @@ function drags(dragElement, resizeElement, container) {
         minLeft = containerOffset + 10;
         maxLeft = containerOffset + containerWidth - dragWidth - 10;
 
-        console.log("mousedown add draggable,posX:", posX)
-            // Calculate the dragging distance on mousemove.
+        // Calculate the dragging distance on mousemove.
         dragElement.parents().on("mousemove.ba-events touchmove.ba-events", function (e) {
             if (clicked == 0)
                 return;
@@ -290,7 +281,6 @@ function drags(dragElement, resizeElement, container) {
                 leftValue = maxLeft;
             }
 
-            console.log("mousemove leftValue:", leftValue, ",moveX:", moveX, ",posX:", posX);
             position = ((leftValue - containerOffset) / containerWidth) * 100;
             // Set the new values for the slider and the handle. 
             // Bind mouseup events to stop dragging.
@@ -299,7 +289,6 @@ function drags(dragElement, resizeElement, container) {
 
         }).on('mouseup.ba-events touchend.ba-events touchcancel.ba-events', function () {
             clicked = 0;
-            console.log("mouseup 2 remove draggable")
             dragElement.removeClass('draggable');
             $(this).off('.ba-events');
         });
