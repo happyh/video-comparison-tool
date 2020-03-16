@@ -137,17 +137,19 @@ function showCompare(img) {
 function syncVideoStart() {
     var mediaLoaded = [];
     var videos = Array.from(videoContainer.getElementsByTagName("video"));
+    console.log("videos:",videos)
     videos.forEach(function (video) {
-        video.oncanplaythrough = function () {
+        video.oncanplay = function () {
+            console.log("video:",video," oncanplaythrough")
             mediaLoaded.push(true);
             if (mediaLoaded.length === videos.length) {
-                videos.forEach(function (video) {
-                    video.play();
-                })
+                //videos.forEach(function (video) { video.play();})
+                togglePlayPause();
             }
         }
     });
 
+	progressWrap.addEventListener("mousedown", videoSeek);
     showCompare(rightVideo);
 }
 
@@ -182,10 +184,43 @@ function syncPosition(nrOfFrames) {
         setNewPosition(nrOfFrames);
 }
 
+var playProgress = document.getElementById("playProgress");
+function getProgress() {
+    var percent = leftVideo.currentTime / leftVideo.duration;
+    playProgress.style.width = percent * (progressWrap.offsetWidth) - 2 + "px";
+    showProgress.innerHTML = (percent * 100).toFixed(1) + "%";
+}
+
+var progressFlag;
 function togglePlayPause() {
     var playpause = document.getElementById("play-pause-button")
     leftVideo.paused ? togglePlay(playpause, leftVideo) : togglePause(playpause, leftVideo);
     rightVideo.paused ? togglePlay(playpause, rightVideo) : togglePause(playpause, rightVideo);
+
+    if (leftVideo.paused){
+        clearInterval(progressFlag);
+    }else{
+        progressFlag = setInterval(getProgress, 60);
+    }
+}
+
+function videoSeek(e) {
+    if (leftVideo.paused || leftVideo.ended) {
+        togglePlayPause()
+		enhanceVideoSeek(e);
+    } else {
+        enhanceVideoSeek(e);
+    }
+}
+    
+function enhanceVideoSeek(e) {
+	clearInterval(progressFlag);
+    var length = e.pageX - progressWrap.offsetLeft;
+    var percent = length / progressWrap.offsetWidth;
+    playProgress.style.width = percent * (progressWrap.offsetWidth) - 2 + "px";
+    leftVideo.currentTime = percent * leftVideo.duration;
+	rightVideo.currentTime = percent * rightVideo.duration;
+    progressFlag = setInterval(getProgress, 60);
 }
 
 function togglePause(button, video) {
@@ -197,6 +232,7 @@ function togglePlay(button, video) {
     button.src = ICON_PAUSE;
     video.play()
 }
+
 
 // todo: add progress bar to controls (https://www.adobe.com/devnet/archive/html5/articles/html5-multimedia-pt3.html)
 

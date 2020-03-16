@@ -143,3 +143,21 @@ body {
     line-height:48px;
     font-size:30px;
 }
+
+ #progressWrap{
+            background-color: black;
+            height: 25px;
+            cursor: pointer;
+}
+#playProgress{
+            background-color: red;
+            width: 0px;
+            height: 25px;
+            border-right: 2px solid blue;
+}
+#showProgress{
+            background-color: ;
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 25px;
+}

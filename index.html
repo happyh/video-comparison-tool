@@ -10,7 +10,7 @@
   <div class="player" id="video-compare-container">
     <div id="video-clipper">
       <video id="left-video" muted loop > 
-        <source src=/5.mp4>
+        <source src=/1.mp4>
       </video>
     </div>
     <video id="right-video" muted loop >
@@ -22,6 +22,11 @@
       <input class="control-button" id="rewind-button" type="image" src="assets/icons/rewind.svg" onclick="seekFrames(-1)"/>
       <input class="control-button" id="play-pause-button" type="image" src="assets/icons/pause.svg" onclick="togglePlayPause()"/>
       <input class="control-button" id="ff-button" type="image" src="assets/icons/fast-forward.svg" onclick="seekFrames(1)"/>
+    </div>
+  </div>
+  <div id="progressWrap">  
+    <div id="playProgress">  
+      <span id="showProgress">0</span> 
     </div>
   </div>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
