@@ -61,7 +61,7 @@ window.onkeyup = function (keyEvent) {
 
 function appendMetaData(video, source, overlay) {
     overlay.innerHTML =
-        "Source: " + source + "<br>" +
+    "Source: " + source + "<br>" +
         "Resolution: " + video.videoWidth + "x" + video.videoHeight;
 }
 
@@ -177,6 +177,40 @@ function setNewPosition(nrOfFrames) {
         leftVideo.currentTime = newPosRight;
         rightVideo.currentTime = newPosRight;
     }
+}
+
+// see: http://www.inconduit.com/smpte/
+function seekFramesl(nrOfFrames) {
+    var playpause = document.getElementById("play-pause-button")
+    if (!leftVideo.paused)
+        togglePause(playpause, leftVideo)
+    if (!rightVideo.paused)
+        togglePause(playpause, rightVideo);
+
+    setNewPositionl(nrOfFrames);
+}
+
+function setNewPositionl(nrOfFrames) {
+    var newPosLeft = getNewPosition(leftVideo, nrOfFrames);
+
+    leftVideo.currentTime = newPosLeft;
+}
+
+// see: http://www.inconduit.com/smpte/
+function seekFramesr(nrOfFrames) {
+    var playpause = document.getElementById("play-pause-button")
+    if (!leftVideo.paused)
+        togglePause(playpause, leftVideo)
+    if (!rightVideo.paused)
+        togglePause(playpause, rightVideo);
+
+    setNewPositionr(nrOfFrames);
+}
+
+function setNewPositionr(nrOfFrames) {
+    var newPosRight = getNewPosition(rightVideo, nrOfFrames);
+
+    rightVideo.currentTime = newPosRight;
 }
 
 function syncPosition(nrOfFrames) {

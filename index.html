@@ -7,6 +7,12 @@
 </head>
 
 <body>
+  <table width="100%" align="center">
+  <tr>
+      <td align="center"><div class="overlay" id="left-video-overlay" ></div></td>
+      <td align="center"><div class="overlay" id="right-video-overlay"></div></td>
+  </tr>
+  </table>
   <div class="player" id="video-compare-container">
     <div id="video-clipper">
       <video id="left-video" muted loop > 
@@ -16,12 +22,12 @@
     <video id="right-video" muted loop >
       <source src=/2.mp4>
     </video>
-    <div class="overlay" id="left-video-overlay" ></div>
-    <div class="overlay" id="right-video-overlay"></div>
     <div class="controls" id="controls">
-      <input class="control-button" id="rewind-button" type="image" src="assets/icons/rewind.svg" onclick="seekFrames(-1)"/>
+      <input class="control-button" id="rewind-button-l" type="image" src="assets/icons/rewind.svg" onclick="seekFramesl(-1)"/>
+      <input class="control-button" id="ff-button-l" type="image" src="assets/icons/fast-forward.svg" onclick="seekFramesl(1)"/>
       <input class="control-button" id="play-pause-button" type="image" src="assets/icons/pause.svg" onclick="togglePlayPause()"/>
-      <input class="control-button" id="ff-button" type="image" src="assets/icons/fast-forward.svg" onclick="seekFrames(1)"/>
+      <input class="control-button" id="rewind-button-r" type="image" src="assets/icons/rewind.svg" onclick="seekFramesr(-1)"/>
+      <input class="control-button" id="ff-button-r" type="image" src="assets/icons/fast-forward.svg" onclick="seekFramesr(1)"/>
     </div>
   </div>
   <div id="progressWrap">  
